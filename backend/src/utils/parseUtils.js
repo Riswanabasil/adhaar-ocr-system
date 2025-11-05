@@ -197,8 +197,8 @@ const DOB_LINE_RE =
 const GENDER_RE_FULL = /\b(FEMALE|MALE|TRANSGENDER|OTHERS)\b/i;
 
 // ---------- Noise control
-const CLEAN_CHARS = /[^A-Za-z0-9,\-\/().\s:]/g;
-const MULTISPACE = /\s{2,}/g;
+// const CLEAN_CHARS = /[^A-Za-z0-9,\-\/().\s:]/g;
+// const MULTISPACE = /\s{2,}/g;
 const MULTICOMMA = /,\s*,+/g;
 
 const FOOTER_PATTERNS = [
@@ -214,13 +214,13 @@ const FOOTER_PATTERNS = [
 ];
 
 // lines we never want to use as name/address seeds
-function isFooter(line) {
-  return (
-    !line ||
-    line.length < 3 ||
-    FOOTER_PATTERNS.some((re) => re.test(line))
-  );
-}
+// function isFooter(line) {
+//   return (
+//     !line ||
+//     line.length < 3 ||
+//     FOOTER_PATTERNS.some((re) => re.test(line))
+//   );
+// }
 
 // ---------- Simple numeric fields
 export function findAadhaarIn(text) {
@@ -246,52 +246,111 @@ export function findGender(text) {
 // 1) Look in a small window above the "Year of Birth/DOB" line.
 // 2) Score candidate lines by: (letters ratio) + (2–5 capitalized words) + (no digits).
 // 3) Strip leading non-letters (like stray "i") and extra tokens.
+// export function extractNameFromFront(frontText) {
+//   const rawLines = frontText.split('\n');
+
+//   // clean & normalize
+//   const lines = rawLines
+//     .map((l) => l.replace(CLEAN_CHARS, '').replace(MULTISPACE, ' ').trim())
+//     .filter((l) => !isFooter(l));
+
+//   const yobIdx = lines.findIndex((l) => /year of birth|dob/i.test(l));
+//   const windowStart = yobIdx > 0 ? Math.max(0, yobIdx - 4) : 0;
+//   const windowEnd = yobIdx > 0 ? yobIdx : Math.min(lines.length, 6);
+
+//   const windowLines = lines.slice(windowStart, windowEnd);
+
+//   function scoreLine(l) {
+//     if (!l) return -1;
+//     if (/\d/.test(l)) return -1; // names shouldn’t include digits
+//     const parts = l.split(' ').filter(Boolean);
+//     if (parts.length < 2 || parts.length > 5) return -1;
+
+//     const caps = parts.filter((p) => /^[A-Z][a-zA-Z'.-]*$/.test(p)).length;
+//     if (caps < 2) return -1;
+
+//     const letters = (l.match(/[A-Za-z]/g) || []).length;
+//     const ratio = letters / Math.max(1, l.length); // 0..1
+
+//     return ratio + caps * 0.2; // simple heuristic
+//   }
+
+//   let best = null;
+//   let bestScore = -1;
+//   for (const l of windowLines) {
+//     const s = scoreLine(l);
+//     if (s > bestScore) {
+//       best = l;
+//       bestScore = s;
+//     }
+//   }
+
+//   if (!best) return null;
+
+//   // remove stray leading chars like "i "
+//   best = best.replace(/^[^A-Za-z]+/, '').trim();
+
+//   // final sanity: require at least two capitalized words
+//   const capWords = best.split(' ').filter((p) => /^[A-Z][a-zA-Z'.-]*$/.test(p));
+//   if (capWords.length < 2) return null;
+
+//   return best;
+// }
+// utils/parseUtils.js (or wherever extractNameFromFront lives)
+const CLEAN_CHARS = /[^\p{L}\p{N} .,'()-:/]/gu;   // keep letters (all scripts), numbers & basic punct
+const MULTISPACE  = /\s+/g;
+
+function isFooter(l) {
+  return /(unique identification|authority|government of india|help@uidai|uidai\.gov\.in|1947)/i.test(l);
+}
+
 export function extractNameFromFront(frontText) {
   const rawLines = frontText.split('\n');
 
-  // clean & normalize
   const lines = rawLines
-    .map((l) => l.replace(CLEAN_CHARS, '').replace(MULTISPACE, ' ').trim())
-    .filter((l) => !isFooter(l));
+    .map(l => l.replace(CLEAN_CHARS, '').replace(MULTISPACE, ' ').trim())
+    .filter(Boolean)
+    .filter(l => !isFooter(l));
 
-  const yobIdx = lines.findIndex((l) => /year of birth|dob/i.test(l));
+  const yobIdx = lines.findIndex(l => /year of birth|dob/i.test(l));
   const windowStart = yobIdx > 0 ? Math.max(0, yobIdx - 4) : 0;
-  const windowEnd = yobIdx > 0 ? yobIdx : Math.min(lines.length, 6);
-
+  const windowEnd   = yobIdx > 0 ? yobIdx : Math.min(lines.length, 6);
   const windowLines = lines.slice(windowStart, windowEnd);
 
   function scoreLine(l) {
     if (!l) return -1;
-    if (/\d/.test(l)) return -1; // names shouldn’t include digits
+    // Names rarely contain digits on Aadhaar
+    if (/\d/.test(l)) return -1;
+
+    // Heuristic: 2–5 tokens with most tokens TitleCased
     const parts = l.split(' ').filter(Boolean);
     if (parts.length < 2 || parts.length > 5) return -1;
 
-    const caps = parts.filter((p) => /^[A-Z][a-zA-Z'.-]*$/.test(p)).length;
+    const caps = parts.filter(p => /^[A-Z][a-zA-Z'.-]*$/.test(p)).length;
     if (caps < 2) return -1;
 
+    // Prefer shorter, cleaner lines
     const letters = (l.match(/[A-Za-z]/g) || []).length;
-    const ratio = letters / Math.max(1, l.length); // 0..1
-
-    return ratio + caps * 0.2; // simple heuristic
+    const ratio = letters / Math.max(1, l.length);
+    return ratio + caps * 0.25 - parts.length * 0.05;
   }
 
-  let best = null;
-  let bestScore = -1;
+  let best = null, bestScore = -1;
   for (const l of windowLines) {
     const s = scoreLine(l);
-    if (s > bestScore) {
-      best = l;
-      bestScore = s;
-    }
+    if (s > bestScore) { best = l; bestScore = s; }
   }
-
   if (!best) return null;
 
-  // remove stray leading chars like "i "
+  // ---- FINAL CLEANUPS ----
+  // 1) Drop any leading single stray token like "i ", "l ", "1 "
+  best = best.replace(/^[iIl1]\s+(?=[A-Z][a-z]+)/, '');
+
+  // 2) Remove any leading non-letter noise
   best = best.replace(/^[^A-Za-z]+/, '').trim();
 
-  // final sanity: require at least two capitalized words
-  const capWords = best.split(' ').filter((p) => /^[A-Z][a-zA-Z'.-]*$/.test(p));
+  // 3) Ensure at least two TitleCase words remain
+  const capWords = best.split(' ').filter(p => /^[A-Z][a-zA-Z'.-]*$/.test(p));
   if (capWords.length < 2) return null;
 
   return best;
