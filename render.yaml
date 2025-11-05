@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: aadhaar-backend
+    env: node
+    rootDir: backend
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: CORS_ORIGIN
+        value: https://aadhaar-frontend.onrender.com
+
+  - type: static
+    name: aadhaar-frontend
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: "dist"
