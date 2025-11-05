@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API = axios.create({
   // baseURL: "http://localhost:4000/api", 
-  baseURL:"https://adhaar-ocr-system-43gh.onrender.com"
+  baseURL:"https://adhaar-ocr-system-43gh.onrender.com/api"
 });
 
 export const parseAadhaar = async (front: File, back: File) => {
