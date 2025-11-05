@@ -32,7 +32,7 @@ interface ParsedResultProps {
   raw: any;
 }
 
-const ParsedResult: React.FC<ParsedResultProps> = ({ data, raw }) => {
+const ParsedResult: React.FC<ParsedResultProps> = ({ data }) => {
   if (!data) {
     return <p className="text-gray-500">⚠ Upload and parse to see results</p>;
   }
@@ -50,10 +50,10 @@ const ParsedResult: React.FC<ParsedResultProps> = ({ data, raw }) => {
 
       <p className="mt-3"><strong>Address:</strong> {data.address || "N/A"}</p>
 
-      <h3 className="text-md font-semibold mt-5 mb-2">Raw OCR Output</h3>
+      {/* <h3 className="text-md font-semibold mt-5 mb-2">Raw OCR Output</h3>
       <pre className="bg-gray-100 p-3 rounded text-xs overflow-auto max-h-60">
         {JSON.stringify(raw, null, 2)}
-      </pre>
+      </pre> */}
     </div>
   );
 };
