@@ -101,7 +101,7 @@ const Home = () => {
             className={`w-full py-3 font-semibold rounded-lg shadow-md transition
     ${canParse
                 ? 'bg-blue-600 hover:bg-blue-700 text-black'
-                : 'bg-gray-300 text-gray-700 cursor-not-allowed'
+                : 'bg-gray-300 text-gray-700 cursor-not-allowed text-black'
               }`}
           >
             {loading ? 'Processing...' : 'Parse Aadhaar'}
