@@ -54,7 +54,7 @@
 
 // export default Home;
 
-import React, { useState } from "react";
+import  { useState } from "react";
 import UploadCard from "../components/UploadCard";
 import { parseAadhaar } from "../utils/api";
 import ParsedResult from "../components/ParsedResult";
