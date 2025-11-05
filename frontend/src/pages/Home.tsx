@@ -27,7 +27,7 @@
 //   };
 
 //   return (
-    
+
 //     <div className="p-6 grid grid-cols-2 gap-6">
 
 //       {/* Left: Upload Section */}
@@ -54,7 +54,7 @@
 
 // export default Home;
 
-import  { useState } from "react";
+import { useState } from "react";
 import UploadCard from "../components/UploadCard";
 import { parseAadhaar } from "../utils/api";
 import ParsedResult from "../components/ParsedResult";
@@ -82,7 +82,7 @@ const Home = () => {
     setLoading(false);
   };
 
-const canParse = !!front && !!back && !loading;
+  const canParse = !!front && !!back && !loading;
 
   return (
     <div className="min-h-screen p-6">
@@ -96,16 +96,16 @@ const canParse = !!front && !!back && !loading;
 
 
           <button
-  onClick={handleParse}
-  disabled={!front || !back || loading}
-  className={`w-full py-3 font-semibold rounded-lg shadow-md transition
+            onClick={handleParse}
+            disabled={!front || !back || loading}
+            className={`w-full py-3 font-semibold rounded-lg shadow-md transition
     ${canParse
-      ? 'bg-blue-600 hover:bg-blue-700 text-white'
-      : 'bg-gray-300 text-gray-700 cursor-not-allowed'
-    }`}
->
-  {loading ? 'Processing...' : 'Parse Aadhaar'}
-</button>
+                ? 'bg-blue-600 hover:bg-blue-700 text-black'
+                : 'bg-gray-300 text-gray-700 cursor-not-allowed'
+              }`}
+          >
+            {loading ? 'Processing...' : 'Parse Aadhaar'}
+          </button>
         </div>
 
         {/* Result Section */}
