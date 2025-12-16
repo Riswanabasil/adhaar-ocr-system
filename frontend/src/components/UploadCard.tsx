@@ -1,42 +1,5 @@
 
 
-// import React from "react";
-
-// interface UploadCardProps {
-//   label: string;
-//   file: File | null;
-//   setFile: (file: File | null) => void;
-// }
-
-// const UploadCard: React.FC<UploadCardProps> = ({ label, file, setFile }) => {
-//   return (
-//     <div className="border-2 border-dashed border-gray-300 hover:border-blue-500 transition-all p-4 rounded-lg bg-white shadow-sm">
-//       <p className="font-medium text-gray-600 mb-2">{label}</p>
-
-//       {file ? (
-//         <img
-//           src={URL.createObjectURL(file)}
-//           alt="preview"
-//           className="w-full h-40 object-cover rounded-lg shadow-sm"
-//         />
-//       ) : (
-//         <div className="h-40 flex items-center justify-center text-gray-400">
-//           <span>Click to upload image</span>
-//         </div>
-//       )}
-
-//       <input
-//         type="file"
-//         accept="image/*"
-//         onChange={(e) => setFile(e.target.files?.[0] || null)}
-//         className="mt-3 w-full text-sm"
-//       />
-//     </div>
-//   );
-// };
-
-// export default UploadCard;
-
 import React, { useId } from "react";
 
 interface UploadCardProps {

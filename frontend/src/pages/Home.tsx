@@ -2,12 +2,13 @@ import { useState } from "react";
 import UploadCard from "../components/UploadCard";
 import { parseAadhaar } from "../utils/api";
 import ParsedResult from "../components/ParsedResult";
+import type { ParsedAadhaarData } from "../types/Aadhaar.types";
+
 
 const Home = () => {
   const [front, setFront] = useState<File | null>(null);
   const [back, setBack] = useState<File | null>(null);
-  const [result, setResult] = useState<any>(null);
-  const [raw, setRaw] = useState<any>(null);
+  const [result, setResult] = useState<ParsedAadhaarData | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleParse = async () => {
@@ -19,7 +20,6 @@ const Home = () => {
     try {
       const res = await parseAadhaar(front, back);
       setResult(res.data.data);
-      setRaw(res.data.raw);
     } catch (err) {
       alert("Error during parsing.");
     }
@@ -100,7 +100,7 @@ const Home = () => {
 
         {/* Result Section */}
         <div className="bg-white shadow-2xl rounded-2xl p-6 overflow-auto border border-gray-200">
-          <ParsedResult data={result} raw={raw} />
+          <ParsedResult data={result} />
         </div>
       </div>
     </div>

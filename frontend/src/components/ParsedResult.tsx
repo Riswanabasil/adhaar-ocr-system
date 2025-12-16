@@ -1,7 +1,5 @@
-interface ParsedResultProps {
-  data: any;
-  raw: any;
-}
+
+import type { ParsedResultProps } from "../types/Aadhaar.types";
 
 const ParsedResult: React.FC<ParsedResultProps> = ({ data }) => {
   if (!data) {
