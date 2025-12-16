@@ -1,5 +1,5 @@
-import { BAD_REQUEST } from '../constants/statusCodes.js';
-import { MSG_MISSING_FILES, MSG_INVALID_FILETYPE } from '../constants/messages.js';
+import { BAD_REQUEST } from '../constants/statusCodes';
+import { MSG_MISSING_FILES, MSG_INVALID_FILETYPE } from '../constants/messages';
 
 const ALLOWED = new Set(['image/jpeg', 'image/png']);
 

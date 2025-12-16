@@ -1,6 +1,6 @@
 import { createServer } from 'http';
-import app from './app.js';
-import { PORT } from './config/index.js';
+import app from './app';
+import { PORT } from './config/index';
 
 const server = createServer(app);
 

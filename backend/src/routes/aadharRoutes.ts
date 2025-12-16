@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { health } from '../controllers/aadharController.js';
-import { upload } from '../utils/parseUtils.js';
-import { validateFiles } from '../middlewares/validateFiles.js';
-import { parseImmediate } from '../controllers/aadharController.js';
+import { health } from '../controllers/aadharController';
+import { upload } from '../utils/parseUtils';
+import { validateFiles } from '../middlewares/validateFiles';
+import { parseImmediate } from '../controllers/aadharController';
 
 const router = Router();
 

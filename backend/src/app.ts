@@ -3,9 +3,9 @@ import cors from "cors"
 import morgan from "morgan"
 import helmet from "helmet"
 import rateLimit from 'express-rate-limit';
-import aadharRoutes from './routes/aadharRoutes.js';
-import { CORS_ORIGIN } from './config/index.js';
-import { notFound, errorHandler } from './middlewares/errorHandler.js';
+import aadharRoutes from './routes/aadharRoutes';
+import { CORS_ORIGIN } from './config/index';
+import { notFound, errorHandler } from './middlewares/errorHandler';
 
 const app = express();
 
